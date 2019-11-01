@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.dao.UserDao">
+    <select id="qryProductList" resultType="com.hyy.ifm.dto.DcProductResult">
+        SELECT dp.id, dp.name, dpc.name classify, dp.interest, dp.link, dp.description, dp.manager_url, dp.manager_user, dp.manager_password,
+        dp.create_time, dp.status, dp.sort, dp.position, dp.is_hot, dp.hot_sort
+        FROM dc_product AS dp
+        LEFT JOIN dc_product_classify AS dpc ON dpc.id = dp.classify_id
+        WHERE dp.status IN ('0', '1')
+        <if test="name_cnd !='' and name_cnd !=null">
+            and dp.name like concat("%",#{name_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="classify_cnd !='' and classify_cnd !=null">
+            and dpc.id = #{classify_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="status_cnd !='' and status_cnd !=null">
+            and dp.status = #{status_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="is_hot_cnd !='' and is_hot_cnd !=null">
+            and dp.is_hot = #{is_hot_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="position_cnd != null and position_cnd != '' ">
+            and dp.position = #{position_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="create_time_FROM_cnd !='' and create_time_FROM_cnd != null">
+            and dp.create_time >= #{create_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="create_time_TO_cnd !='' and create_time_TO_cnd != null">
+            <![CDATA[ and dp.create_time <= concat(#{create_time_TO_cnd,jdbcType=VARCHAR}," 23:59:59") ]]>
+        </if>
+        ORDER BY dp.sort asc,dp.hot_sort asc,dp.position desc, dp.status desc, dp.create_time desc
+    </select>
+    <select id="qryUserListByType" resultType="map">
+        SELECT isu.userId, isu.USER_NAME, isu.ORG_ID, isu.JOB_NUM, isu.SEX, isu.DEGREE, isu.IDENTITY_CARD, isu.PHONE, isu.COMPANY_EMAIL, isu.PERSONAL_EMAIL,
+        isu.LIVE_ADDR, isu.CREAT_DATE, isu.LGN_ID, isu.STATUS, isu.department, isl.USER_CODE
+        FROM ifm_sys_user AS isu
+        LEFT JOIN ifm_sys_login AS isl ON isl.lgnId = isu.LGN_ID
+        WHERE 1=1 and isl.type = '2' AND userId != '1'
+        <if test="user_code_cnd !='' and user_code_cnd !=null">
+            and isl.user_code like concat("%",#{user_code_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="identity_card_cnd !='' and identity_card_cnd !=null">
+            and isu.IDENTITY_CARD like concat("%",#{identity_card_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="user_name_cnd !='' and user_name_cnd !=null">
+            and isu.user_name like concat("%",#{user_name_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="sex_cnd !='' and sex_cnd !=null">
+            and isu.sex = #{sex_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="status_cnd !='' and status_cnd !=null">
+            and isu.status = #{status_cnd,jdbcType=VARCHAR}
+        </if>
+        ORDER BY isu.status,isu.CREAT_DATE desc
+    </select>
+    <select id="qryUserlogin" resultType="map">
+        SELECT isr.ROLE_NAME role, isu.USER_NAME userName, isll.loginDate loginTime, isll.address
+        from ifm_sys_user isu
+        LEFT JOIN ifm_sys_login isl ON isl.lgnId = isu.LGN_ID
+        LEFT JOIN ifm_sys_login_log isll ON isll.USER_CODE = isl.USER_CODE
+        LEFT JOIN ifm_user_role iur ON isu.userId = iur.USER_ID
+        LEFT JOIN ifm_sys_role isr ON iur.ROLE_ID = isr.roleId
+        where isu.userId = #{id,jdbcType=INTEGER}
+        order by isll.loginDate desc
+    </select>
+    <select id="qryDataEchartsLogin" resultType="map">
+        select a.login_date,ifnull(c.count,0) count
+        from (
+           ${condition}
+        ) a
+        LEFT JOIN (
+            SELECT DATE_FORMAT(isll.loginDate,'%Y-%m-%d')loginDate,count(*) as count
+            from ifm_sys_user isu
+            LEFT JOIN ifm_sys_login isl ON isl.lgnId = isu.LGN_ID
+            LEFT JOIN ifm_sys_login_log isll ON isll.USER_CODE = isl.USER_CODE
+            LEFT JOIN ifm_user_role iur ON isu.userId = iur.USER_ID
+            LEFT JOIN ifm_sys_role isr ON iur.ROLE_ID = isr.roleId
+            where isu.userId = #{id,jdbcType=INTEGER}
+            and isll.loginDate>DATE_ADD(NOW(),INTERVAL -7 DAY)
+            group by date(isll.loginDate)
+        ) c on a.login_date = c.loginDate
+        ORDER BY a.login_date
+    </select>
+
+</mapper>

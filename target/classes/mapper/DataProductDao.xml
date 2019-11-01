@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.dao.DataProductDao">
+    <select id="qryDataProductListBy1" resultType="map">
+        SELECT dpvl.id, dp.name product_name, dpvl.visit_time, sum(dpvl.count)count
+        FROM dc_product_visit_log AS dpvl
+        LEFT JOIN dc_product AS dp ON dp.id = dpvl.product_id
+        WHERE dpvl.type in('0','2') and dp.status = 1
+        <if test="product_name_cnd != null and product_name_cnd != '' ">
+            and dp.name like concat("%",#{product_name_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and dpvl.visit_time >= concat(#{visit_time_FROM_cnd,jdbcType=VARCHAR},":00:00")
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and dpvl.visit_time <= concat(#{visit_time_TO_cnd,jdbcType=VARCHAR},":00:00") ]]>
+        </if>
+        group by dp.id
+    </select>
+    <select id="qryDataProductListBy2" resultType="map">
+        SELECT dpvl.id, dp.name product_name, dpvl.visit_time, sum(dpvl.count)count
+        FROM dc_product_visit_log AS dpvl
+        LEFT JOIN dc_product AS dp ON dp.id = dpvl.product_id
+        WHERE dpvl.type in('0','2') and dp.status = 0
+        <if test="product_name_cnd != null and product_name_cnd != '' ">
+            and dp.name like concat("%",#{product_name_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and dpvl.visit_time >= concat(#{visit_time_FROM_cnd,jdbcType=VARCHAR},":00:00")
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and dpvl.visit_time <= concat(#{visit_time_TO_cnd,jdbcType=VARCHAR},":00:00") ]]>
+        </if>
+        group by dp.id
+    </select>
+    <select id="exportDataProductList" resultType="map">
+        SELECT dpvl.id, dp.name product_name, dpvl.visit_time, dpvl.count
+        FROM dc_product_visit_log AS dpvl
+        LEFT JOIN dc_product AS dp ON dp.id = dpvl.product_id
+        WHERE dpvl.type = '0'
+        <if test="product_name_cnd != null and product_name_cnd != '' ">
+            and dp.name like concat("%",#{product_name_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and dpvl.visit_time >= concat(#{visit_time_FROM_cnd,jdbcType=VARCHAR},":00:00")
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and dpvl.visit_time <= concat(#{visit_time_TO_cnd,jdbcType=VARCHAR},":00:00") ]]>
+        </if>
+        ORDER BY dpvl.visit_time desc
+    </select>
+    <select id="qryDataEchartsProductById" resultType="map">
+        select DATE_FORMAT(a.click_date,'%Y-%m-%d %H:%i:%s') click_date,ifnull(c.count,0) count
+        from (
+            ${condition}
+        ) a
+        LEFT JOIN (
+            SELECT dpvl.id, dpvl.product_id, dpvl.visit_time, dpvl.count
+            FROM dc_product_visit_log AS dpvl
+            WHERE 1=1 AND dpvl.type = '0' AND dpvl.product_id = #{item.productId,jdbcType=VARCHAR}
+        ) c on a.click_date = c.visit_time
+        ORDER BY a.click_date
+    </select>
+
+</mapper>

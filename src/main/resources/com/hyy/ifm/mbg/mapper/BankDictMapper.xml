@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.mbg.mapper.BankDictMapper">
+  <resultMap id="BaseResultMap" type="com.hyy.ifm.mbg.model.BankDict">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="DATA_TYPE" jdbcType="VARCHAR" property="dataType" />
+    <result column="ITEM_KEY" jdbcType="VARCHAR" property="itemKey" />
+    <result column="ITEM_VALUE" jdbcType="VARCHAR" property="itemValue" />
+    <result column="XH" jdbcType="VARCHAR" property="xh" />
+    <result column="OUT_DATA_FROM" jdbcType="VARCHAR" property="outDataFrom" />
+    <result column="PARENT_ID" jdbcType="INTEGER" property="parentId" />
+    <result column="DICT_DESC" jdbcType="VARCHAR" property="dictDesc" />
+    <result column="is_view" jdbcType="VARCHAR" property="isView" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, DATA_TYPE, ITEM_KEY, ITEM_VALUE, XH, OUT_DATA_FROM, PARENT_ID, DICT_DESC, is_view
+  </sql>
+  <select id="selectByExample" parameterType="com.hyy.ifm.mbg.model.BankDictExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from bank_dict
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bank_dict
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from bank_dict
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hyy.ifm.mbg.model.BankDictExample">
+    delete from bank_dict
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hyy.ifm.mbg.model.BankDict">
+    insert into bank_dict (id, DATA_TYPE, ITEM_KEY, 
+      ITEM_VALUE, XH, OUT_DATA_FROM, 
+      PARENT_ID, DICT_DESC, is_view
+      )
+    values (#{id,jdbcType=INTEGER}, #{dataType,jdbcType=VARCHAR}, #{itemKey,jdbcType=VARCHAR}, 
+      #{itemValue,jdbcType=VARCHAR}, #{xh,jdbcType=VARCHAR}, #{outDataFrom,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=INTEGER}, #{dictDesc,jdbcType=VARCHAR}, #{isView,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hyy.ifm.mbg.model.BankDict">
+    insert into bank_dict
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dataType != null">
+        DATA_TYPE,
+      </if>
+      <if test="itemKey != null">
+        ITEM_KEY,
+      </if>
+      <if test="itemValue != null">
+        ITEM_VALUE,
+      </if>
+      <if test="xh != null">
+        XH,
+      </if>
+      <if test="outDataFrom != null">
+        OUT_DATA_FROM,
+      </if>
+      <if test="parentId != null">
+        PARENT_ID,
+      </if>
+      <if test="dictDesc != null">
+        DICT_DESC,
+      </if>
+      <if test="isView != null">
+        is_view,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dataType != null">
+        #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="itemKey != null">
+        #{itemKey,jdbcType=VARCHAR},
+      </if>
+      <if test="itemValue != null">
+        #{itemValue,jdbcType=VARCHAR},
+      </if>
+      <if test="xh != null">
+        #{xh,jdbcType=VARCHAR},
+      </if>
+      <if test="outDataFrom != null">
+        #{outDataFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="dictDesc != null">
+        #{dictDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isView != null">
+        #{isView,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hyy.ifm.mbg.model.BankDictExample" resultType="java.lang.Integer">
+    select count(*) from bank_dict
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update bank_dict
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.dataType != null">
+        DATA_TYPE = #{record.dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.itemKey != null">
+        ITEM_KEY = #{record.itemKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.itemValue != null">
+        ITEM_VALUE = #{record.itemValue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xh != null">
+        XH = #{record.xh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.outDataFrom != null">
+        OUT_DATA_FROM = #{record.outDataFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null">
+        PARENT_ID = #{record.parentId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dictDesc != null">
+        DICT_DESC = #{record.dictDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isView != null">
+        is_view = #{record.isView,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update bank_dict
+    set id = #{record.id,jdbcType=INTEGER},
+      DATA_TYPE = #{record.dataType,jdbcType=VARCHAR},
+      ITEM_KEY = #{record.itemKey,jdbcType=VARCHAR},
+      ITEM_VALUE = #{record.itemValue,jdbcType=VARCHAR},
+      XH = #{record.xh,jdbcType=VARCHAR},
+      OUT_DATA_FROM = #{record.outDataFrom,jdbcType=VARCHAR},
+      PARENT_ID = #{record.parentId,jdbcType=INTEGER},
+      DICT_DESC = #{record.dictDesc,jdbcType=VARCHAR},
+      is_view = #{record.isView,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hyy.ifm.mbg.model.BankDict">
+    update bank_dict
+    <set>
+      <if test="dataType != null">
+        DATA_TYPE = #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="itemKey != null">
+        ITEM_KEY = #{itemKey,jdbcType=VARCHAR},
+      </if>
+      <if test="itemValue != null">
+        ITEM_VALUE = #{itemValue,jdbcType=VARCHAR},
+      </if>
+      <if test="xh != null">
+        XH = #{xh,jdbcType=VARCHAR},
+      </if>
+      <if test="outDataFrom != null">
+        OUT_DATA_FROM = #{outDataFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        PARENT_ID = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="dictDesc != null">
+        DICT_DESC = #{dictDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isView != null">
+        is_view = #{isView,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hyy.ifm.mbg.model.BankDict">
+    update bank_dict
+    set DATA_TYPE = #{dataType,jdbcType=VARCHAR},
+      ITEM_KEY = #{itemKey,jdbcType=VARCHAR},
+      ITEM_VALUE = #{itemValue,jdbcType=VARCHAR},
+      XH = #{xh,jdbcType=VARCHAR},
+      OUT_DATA_FROM = #{outDataFrom,jdbcType=VARCHAR},
+      PARENT_ID = #{parentId,jdbcType=INTEGER},
+      DICT_DESC = #{dictDesc,jdbcType=VARCHAR},
+      is_view = #{isView,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

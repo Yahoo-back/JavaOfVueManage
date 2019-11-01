@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.dao.XfOrderDao">
+  <resultMap id="BaseResultMap" type="com.hyy.ifm.mbg.model.XfOrder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="outer_id" jdbcType="INTEGER" property="outerId" />
+    <result column="request_no" jdbcType="VARCHAR" property="requestNo" />
+    <result column="user_ip" jdbcType="VARCHAR" property="userIp" />
+    <result column="amt" jdbcType="DOUBLE" property="amt" />
+    <result column="protocol_no" jdbcType="VARCHAR" property="protocolNo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="fuion_order_no" jdbcType="VARCHAR" property="fuionOrderNo" />
+    <result column="pay_date" jdbcType="TIMESTAMP" property="payDate" />
+    <result column="fail_reason" jdbcType="VARCHAR" property="failReason" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, type, outer_id, request_no, user_ip, amt, protocol_no, create_time,
+    status, fuion_order_no, pay_date, fail_reason
+  </sql>
+
+  <select id="selectByRequestNo" parameterType="string" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from xf_order
+    where request_no = #{requestNo,jdbcType=VARCHAR}
+  </select>
+
+  <select id="countTable" resultType="java.lang.Integer" parameterType="java.lang.String">
+    	SELECT COUNT(1) FROM information_schema.TABLES WHERE table_name = #{tableName,jdbcType=VARCHAR}
+    </select>
+
+  <!-- 创建分表 -->
+  <select id="createTable">
+      CREATE TABLE ${tableName} (
+          `id` INT(11) NOT NULL AUTO_INCREMENT,
+          `user_id` INT(11) UNSIGNED NULL DEFAULT NULL,
+          `type` VARCHAR(255) NULL DEFAULT NULL COMMENT '0: 续期, 1: 还款',
+          `outer_id` INT(11) NULL DEFAULT NULL COMMENT 'order_delay标id或user_order标id',
+          `request_no` VARCHAR(155) NULL DEFAULT NULL COMMENT '唯一请求号',
+          `user_ip` VARCHAR(255) NULL DEFAULT NULL COMMENT '客户ip',
+          `amt` DOUBLE(10,2) NULL DEFAULT NULL COMMENT '交易金额, 以元计算, 保留两位小数',
+          `protocol_no` VARCHAR(255) NULL DEFAULT NULL COMMENT '讯付流水号',
+          `create_time` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+          `status` VARCHAR(255) NULL DEFAULT NULL COMMENT '0: 支付中, 1: 成功, 2: 失败, 3: 异常',
+          `pay_date` DATETIME NULL DEFAULT NULL COMMENT '支付时间',
+          `fuion_order_no` VARCHAR(50) NULL DEFAULT NULL,
+          `fail_reason` VARCHAR(1000) NULL DEFAULT NULL COMMENT '失败原因',
+          PRIMARY KEY (`id`),
+          UNIQUE INDEX `request_no_2` (`request_no`) USING BTREE,
+          INDEX `user_id` (`user_id`) USING BTREE,
+          INDEX `request_no` (`request_no`) USING BTREE
+      )
+      COMMENT='创捷订单表'
+      COLLATE='utf8mb4_general_ci'
+      ENGINE=InnoDB
+      ROW_FORMAT=DYNAMIC;
+    </select>
+
+  <insert id="saveShard">
+        insert into ${tableName}(
+        	user_id,
+        	type,
+            outer_id,
+            request_no,
+            user_ip,
+            amt,
+            protocol_no,
+            create_time,
+            status,
+            fuion_order_no,
+            pay_date,
+            fail_reason
+        )values(
+            #{item.userId,jdbcType=INTEGER},
+            #{item.type,jdbcType=VARCHAR},
+            #{item.outerId,jdbcType=INTEGER},
+            #{item.requestNo,jdbcType=VARCHAR},
+            #{item.userIp,jdbcType=VARCHAR},
+            #{item.amt,jdbcType=DOUBLE},
+            #{item.protocolNo,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.status,jdbcType=VARCHAR},
+            #{item.fuionOrderNo,jdbcType=VARCHAR},
+            #{item.payDate,jdbcType=TIMESTAMP},
+            #{item.failReason,jdbcType=VARCHAR}
+        )
+    </insert>
+
+  <select id="selectLastByUserIdAndTypeAndOuterId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from ${tableName}
+    where
+    type = #{params.type,jdbcType=CHAR}
+    and user_id = #{params.userId,jdbcType=INTEGER}
+    and outer_id = #{params.outerId,jdbcType=INTEGER}
+    order by id desc limit 0, 1
+  </select>
+
+
+</mapper>

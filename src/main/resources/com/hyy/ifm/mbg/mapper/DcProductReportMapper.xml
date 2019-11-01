@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.mbg.mapper.DcProductReportMapper">
+  <resultMap id="BaseResultMap" type="com.hyy.ifm.mbg.model.DcProductReport">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="visit_time" jdbcType="TIMESTAMP" property="visitTime" />
+    <result column="settle_time" jdbcType="TIMESTAMP" property="settleTime" />
+    <result column="visit_count" jdbcType="INTEGER" property="visitCount" />
+    <result column="reg_count" jdbcType="INTEGER" property="regCount" />
+    <result column="change_rate" jdbcType="DOUBLE" property="changeRate" />
+    <result column="loan_count" jdbcType="INTEGER" property="loanCount" />
+    <result column="settle_certificatec" jdbcType="VARCHAR" property="settleCertificatec" />
+    <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+    <result column="settle_way" jdbcType="VARCHAR" property="settleWay" />
+    <result column="settle_state" jdbcType="CHAR" property="settleState" />
+    <result column="settle_money" jdbcType="DOUBLE" property="settleMoney" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, product_id, visit_time, settle_time, visit_count, reg_count, change_rate, loan_count, 
+    settle_certificatec, serial_number, settle_way, settle_state, settle_money, remark
+  </sql>
+  <select id="selectByExample" parameterType="com.hyy.ifm.mbg.model.DcProductReportExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from dc_product_report
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from dc_product_report
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from dc_product_report
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hyy.ifm.mbg.model.DcProductReportExample">
+    delete from dc_product_report
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hyy.ifm.mbg.model.DcProductReport">
+    insert into dc_product_report (id, product_id, visit_time, 
+      settle_time, visit_count, reg_count, 
+      change_rate, loan_count, settle_certificatec, 
+      serial_number, settle_way, settle_state, 
+      settle_money, remark)
+    values (#{id,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, #{visitTime,jdbcType=TIMESTAMP}, 
+      #{settleTime,jdbcType=TIMESTAMP}, #{visitCount,jdbcType=INTEGER}, #{regCount,jdbcType=INTEGER}, 
+      #{changeRate,jdbcType=DOUBLE}, #{loanCount,jdbcType=INTEGER}, #{settleCertificatec,jdbcType=VARCHAR}, 
+      #{serialNumber,jdbcType=VARCHAR}, #{settleWay,jdbcType=VARCHAR}, #{settleState,jdbcType=CHAR}, 
+      #{settleMoney,jdbcType=DOUBLE}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hyy.ifm.mbg.model.DcProductReport">
+    insert into dc_product_report
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="visitTime != null">
+        visit_time,
+      </if>
+      <if test="settleTime != null">
+        settle_time,
+      </if>
+      <if test="visitCount != null">
+        visit_count,
+      </if>
+      <if test="regCount != null">
+        reg_count,
+      </if>
+      <if test="changeRate != null">
+        change_rate,
+      </if>
+      <if test="loanCount != null">
+        loan_count,
+      </if>
+      <if test="settleCertificatec != null">
+        settle_certificatec,
+      </if>
+      <if test="serialNumber != null">
+        serial_number,
+      </if>
+      <if test="settleWay != null">
+        settle_way,
+      </if>
+      <if test="settleState != null">
+        settle_state,
+      </if>
+      <if test="settleMoney != null">
+        settle_money,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="visitTime != null">
+        #{visitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settleTime != null">
+        #{settleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitCount != null">
+        #{visitCount,jdbcType=INTEGER},
+      </if>
+      <if test="regCount != null">
+        #{regCount,jdbcType=INTEGER},
+      </if>
+      <if test="changeRate != null">
+        #{changeRate,jdbcType=DOUBLE},
+      </if>
+      <if test="loanCount != null">
+        #{loanCount,jdbcType=INTEGER},
+      </if>
+      <if test="settleCertificatec != null">
+        #{settleCertificatec,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="settleWay != null">
+        #{settleWay,jdbcType=VARCHAR},
+      </if>
+      <if test="settleState != null">
+        #{settleState,jdbcType=CHAR},
+      </if>
+      <if test="settleMoney != null">
+        #{settleMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hyy.ifm.mbg.model.DcProductReportExample" resultType="java.lang.Integer">
+    select count(*) from dc_product_report
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update dc_product_report
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.productId != null">
+        product_id = #{record.productId,jdbcType=INTEGER},
+      </if>
+      <if test="record.visitTime != null">
+        visit_time = #{record.visitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.settleTime != null">
+        settle_time = #{record.settleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.visitCount != null">
+        visit_count = #{record.visitCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.regCount != null">
+        reg_count = #{record.regCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.changeRate != null">
+        change_rate = #{record.changeRate,jdbcType=DOUBLE},
+      </if>
+      <if test="record.loanCount != null">
+        loan_count = #{record.loanCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.settleCertificatec != null">
+        settle_certificatec = #{record.settleCertificatec,jdbcType=VARCHAR},
+      </if>
+      <if test="record.serialNumber != null">
+        serial_number = #{record.serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.settleWay != null">
+        settle_way = #{record.settleWay,jdbcType=VARCHAR},
+      </if>
+      <if test="record.settleState != null">
+        settle_state = #{record.settleState,jdbcType=CHAR},
+      </if>
+      <if test="record.settleMoney != null">
+        settle_money = #{record.settleMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update dc_product_report
+    set id = #{record.id,jdbcType=INTEGER},
+      product_id = #{record.productId,jdbcType=INTEGER},
+      visit_time = #{record.visitTime,jdbcType=TIMESTAMP},
+      settle_time = #{record.settleTime,jdbcType=TIMESTAMP},
+      visit_count = #{record.visitCount,jdbcType=INTEGER},
+      reg_count = #{record.regCount,jdbcType=INTEGER},
+      change_rate = #{record.changeRate,jdbcType=DOUBLE},
+      loan_count = #{record.loanCount,jdbcType=INTEGER},
+      settle_certificatec = #{record.settleCertificatec,jdbcType=VARCHAR},
+      serial_number = #{record.serialNumber,jdbcType=VARCHAR},
+      settle_way = #{record.settleWay,jdbcType=VARCHAR},
+      settle_state = #{record.settleState,jdbcType=CHAR},
+      settle_money = #{record.settleMoney,jdbcType=DOUBLE},
+      remark = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hyy.ifm.mbg.model.DcProductReport">
+    update dc_product_report
+    <set>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="visitTime != null">
+        visit_time = #{visitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settleTime != null">
+        settle_time = #{settleTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="visitCount != null">
+        visit_count = #{visitCount,jdbcType=INTEGER},
+      </if>
+      <if test="regCount != null">
+        reg_count = #{regCount,jdbcType=INTEGER},
+      </if>
+      <if test="changeRate != null">
+        change_rate = #{changeRate,jdbcType=DOUBLE},
+      </if>
+      <if test="loanCount != null">
+        loan_count = #{loanCount,jdbcType=INTEGER},
+      </if>
+      <if test="settleCertificatec != null">
+        settle_certificatec = #{settleCertificatec,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null">
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="settleWay != null">
+        settle_way = #{settleWay,jdbcType=VARCHAR},
+      </if>
+      <if test="settleState != null">
+        settle_state = #{settleState,jdbcType=CHAR},
+      </if>
+      <if test="settleMoney != null">
+        settle_money = #{settleMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hyy.ifm.mbg.model.DcProductReport">
+    update dc_product_report
+    set product_id = #{productId,jdbcType=INTEGER},
+      visit_time = #{visitTime,jdbcType=TIMESTAMP},
+      settle_time = #{settleTime,jdbcType=TIMESTAMP},
+      visit_count = #{visitCount,jdbcType=INTEGER},
+      reg_count = #{regCount,jdbcType=INTEGER},
+      change_rate = #{changeRate,jdbcType=DOUBLE},
+      loan_count = #{loanCount,jdbcType=INTEGER},
+      settle_certificatec = #{settleCertificatec,jdbcType=VARCHAR},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      settle_way = #{settleWay,jdbcType=VARCHAR},
+      settle_state = #{settleState,jdbcType=CHAR},
+      settle_money = #{settleMoney,jdbcType=DOUBLE},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

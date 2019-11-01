@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.mbg.mapper.ClRcXinyanBehaviorRuleMapper">
+  <resultMap id="BaseResultMap" type="com.hyy.ifm.mbg.model.ClRcXinyanBehaviorRule">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="loans_org_count" jdbcType="INTEGER" property="loansOrgCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="loans_score" jdbcType="INTEGER" property="loansScore" />
+    <result column="loans_credibility" jdbcType="INTEGER" property="loansCredibility" />
+    <result column="loans_count" jdbcType="INTEGER" property="loansCount" />
+    <result column="latest_one_month" jdbcType="INTEGER" property="latestOneMonth" />
+    <result column="loans_settle_count" jdbcType="INTEGER" property="loansSettleCount" />
+    <result column="loans_overdue_count" jdbcType="INTEGER" property="loansOverdueCount" />
+    <result column="loans_latest_time" jdbcType="VARCHAR" property="loansLatestTime" />
+    <result column="loans_long_time" jdbcType="INTEGER" property="loansLongTime" />
+    <result column="history_suc_fee" jdbcType="INTEGER" property="historySucFee" />
+    <result column="history_fail_fee" jdbcType="INTEGER" property="historyFailFee" />
+    <result column="latest_one_month_suc" jdbcType="INTEGER" property="latestOneMonthSuc" />
+    <result column="consfin_org_count" jdbcType="INTEGER" property="consfinOrgCount" />
+    <result column="latest_six_month" jdbcType="INTEGER" property="latestSixMonth" />
+    <result column="loans_cash_count" jdbcType="INTEGER" property="loansCashCount" />
+    <result column="latest_three_month" jdbcType="INTEGER" property="latestThreeMonth" />
+    <result column="loans_latest_time_data" jdbcType="INTEGER" property="loansLatestTimeData" />
+    <result column="latest_one_month_fail" jdbcType="INTEGER" property="latestOneMonthFail" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_id, phone, order_no, loans_org_count, create_time, loans_score, loans_credibility, 
+    loans_count, latest_one_month, loans_settle_count, loans_overdue_count, loans_latest_time, 
+    loans_long_time, history_suc_fee, history_fail_fee, latest_one_month_suc, consfin_org_count, 
+    latest_six_month, loans_cash_count, latest_three_month, loans_latest_time_data, latest_one_month_fail
+  </sql>
+  <select id="selectByExample" parameterType="com.hyy.ifm.mbg.model.ClRcXinyanBehaviorRuleExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cl_rc_xinyan_behavior_rule
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from cl_rc_xinyan_behavior_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from cl_rc_xinyan_behavior_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hyy.ifm.mbg.model.ClRcXinyanBehaviorRuleExample">
+    delete from cl_rc_xinyan_behavior_rule
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hyy.ifm.mbg.model.ClRcXinyanBehaviorRule">
+    insert into cl_rc_xinyan_behavior_rule (id, user_id, phone, 
+      order_no, loans_org_count, create_time, 
+      loans_score, loans_credibility, loans_count, 
+      latest_one_month, loans_settle_count, loans_overdue_count, 
+      loans_latest_time, loans_long_time, history_suc_fee, 
+      history_fail_fee, latest_one_month_suc, consfin_org_count, 
+      latest_six_month, loans_cash_count, latest_three_month, 
+      loans_latest_time_data, latest_one_month_fail
+      )
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR}, 
+      #{orderNo,jdbcType=VARCHAR}, #{loansOrgCount,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{loansScore,jdbcType=INTEGER}, #{loansCredibility,jdbcType=INTEGER}, #{loansCount,jdbcType=INTEGER}, 
+      #{latestOneMonth,jdbcType=INTEGER}, #{loansSettleCount,jdbcType=INTEGER}, #{loansOverdueCount,jdbcType=INTEGER}, 
+      #{loansLatestTime,jdbcType=VARCHAR}, #{loansLongTime,jdbcType=INTEGER}, #{historySucFee,jdbcType=INTEGER}, 
+      #{historyFailFee,jdbcType=INTEGER}, #{latestOneMonthSuc,jdbcType=INTEGER}, #{consfinOrgCount,jdbcType=INTEGER}, 
+      #{latestSixMonth,jdbcType=INTEGER}, #{loansCashCount,jdbcType=INTEGER}, #{latestThreeMonth,jdbcType=INTEGER}, 
+      #{loansLatestTimeData,jdbcType=INTEGER}, #{latestOneMonthFail,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hyy.ifm.mbg.model.ClRcXinyanBehaviorRule">
+    insert into cl_rc_xinyan_behavior_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="loansOrgCount != null">
+        loans_org_count,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="loansScore != null">
+        loans_score,
+      </if>
+      <if test="loansCredibility != null">
+        loans_credibility,
+      </if>
+      <if test="loansCount != null">
+        loans_count,
+      </if>
+      <if test="latestOneMonth != null">
+        latest_one_month,
+      </if>
+      <if test="loansSettleCount != null">
+        loans_settle_count,
+      </if>
+      <if test="loansOverdueCount != null">
+        loans_overdue_count,
+      </if>
+      <if test="loansLatestTime != null">
+        loans_latest_time,
+      </if>
+      <if test="loansLongTime != null">
+        loans_long_time,
+      </if>
+      <if test="historySucFee != null">
+        history_suc_fee,
+      </if>
+      <if test="historyFailFee != null">
+        history_fail_fee,
+      </if>
+      <if test="latestOneMonthSuc != null">
+        latest_one_month_suc,
+      </if>
+      <if test="consfinOrgCount != null">
+        consfin_org_count,
+      </if>
+      <if test="latestSixMonth != null">
+        latest_six_month,
+      </if>
+      <if test="loansCashCount != null">
+        loans_cash_count,
+      </if>
+      <if test="latestThreeMonth != null">
+        latest_three_month,
+      </if>
+      <if test="loansLatestTimeData != null">
+        loans_latest_time_data,
+      </if>
+      <if test="latestOneMonthFail != null">
+        latest_one_month_fail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="loansOrgCount != null">
+        #{loansOrgCount,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loansScore != null">
+        #{loansScore,jdbcType=INTEGER},
+      </if>
+      <if test="loansCredibility != null">
+        #{loansCredibility,jdbcType=INTEGER},
+      </if>
+      <if test="loansCount != null">
+        #{loansCount,jdbcType=INTEGER},
+      </if>
+      <if test="latestOneMonth != null">
+        #{latestOneMonth,jdbcType=INTEGER},
+      </if>
+      <if test="loansSettleCount != null">
+        #{loansSettleCount,jdbcType=INTEGER},
+      </if>
+      <if test="loansOverdueCount != null">
+        #{loansOverdueCount,jdbcType=INTEGER},
+      </if>
+      <if test="loansLatestTime != null">
+        #{loansLatestTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loansLongTime != null">
+        #{loansLongTime,jdbcType=INTEGER},
+      </if>
+      <if test="historySucFee != null">
+        #{historySucFee,jdbcType=INTEGER},
+      </if>
+      <if test="historyFailFee != null">
+        #{historyFailFee,jdbcType=INTEGER},
+      </if>
+      <if test="latestOneMonthSuc != null">
+        #{latestOneMonthSuc,jdbcType=INTEGER},
+      </if>
+      <if test="consfinOrgCount != null">
+        #{consfinOrgCount,jdbcType=INTEGER},
+      </if>
+      <if test="latestSixMonth != null">
+        #{latestSixMonth,jdbcType=INTEGER},
+      </if>
+      <if test="loansCashCount != null">
+        #{loansCashCount,jdbcType=INTEGER},
+      </if>
+      <if test="latestThreeMonth != null">
+        #{latestThreeMonth,jdbcType=INTEGER},
+      </if>
+      <if test="loansLatestTimeData != null">
+        #{loansLatestTimeData,jdbcType=INTEGER},
+      </if>
+      <if test="latestOneMonthFail != null">
+        #{latestOneMonthFail,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hyy.ifm.mbg.model.ClRcXinyanBehaviorRuleExample" resultType="java.lang.Integer">
+    select count(*) from cl_rc_xinyan_behavior_rule
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update cl_rc_xinyan_behavior_rule
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.phone != null">
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderNo != null">
+        order_no = #{record.orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loansOrgCount != null">
+        loans_org_count = #{record.loansOrgCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.loansScore != null">
+        loans_score = #{record.loansScore,jdbcType=INTEGER},
+      </if>
+      <if test="record.loansCredibility != null">
+        loans_credibility = #{record.loansCredibility,jdbcType=INTEGER},
+      </if>
+      <if test="record.loansCount != null">
+        loans_count = #{record.loansCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.latestOneMonth != null">
+        latest_one_month = #{record.latestOneMonth,jdbcType=INTEGER},
+      </if>
+      <if test="record.loansSettleCount != null">
+        loans_settle_count = #{record.loansSettleCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.loansOverdueCount != null">
+        loans_overdue_count = #{record.loansOverdueCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.loansLatestTime != null">
+        loans_latest_time = #{record.loansLatestTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loansLongTime != null">
+        loans_long_time = #{record.loansLongTime,jdbcType=INTEGER},
+      </if>
+      <if test="record.historySucFee != null">
+        history_suc_fee = #{record.historySucFee,jdbcType=INTEGER},
+      </if>
+      <if test="record.historyFailFee != null">
+        history_fail_fee = #{record.historyFailFee,jdbcType=INTEGER},
+      </if>
+      <if test="record.latestOneMonthSuc != null">
+        latest_one_month_suc = #{record.latestOneMonthSuc,jdbcType=INTEGER},
+      </if>
+      <if test="record.consfinOrgCount != null">
+        consfin_org_count = #{record.consfinOrgCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.latestSixMonth != null">
+        latest_six_month = #{record.latestSixMonth,jdbcType=INTEGER},
+      </if>
+      <if test="record.loansCashCount != null">
+        loans_cash_count = #{record.loansCashCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.latestThreeMonth != null">
+        latest_three_month = #{record.latestThreeMonth,jdbcType=INTEGER},
+      </if>
+      <if test="record.loansLatestTimeData != null">
+        loans_latest_time_data = #{record.loansLatestTimeData,jdbcType=INTEGER},
+      </if>
+      <if test="record.latestOneMonthFail != null">
+        latest_one_month_fail = #{record.latestOneMonthFail,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update cl_rc_xinyan_behavior_rule
+    set id = #{record.id,jdbcType=BIGINT},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      order_no = #{record.orderNo,jdbcType=VARCHAR},
+      loans_org_count = #{record.loansOrgCount,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      loans_score = #{record.loansScore,jdbcType=INTEGER},
+      loans_credibility = #{record.loansCredibility,jdbcType=INTEGER},
+      loans_count = #{record.loansCount,jdbcType=INTEGER},
+      latest_one_month = #{record.latestOneMonth,jdbcType=INTEGER},
+      loans_settle_count = #{record.loansSettleCount,jdbcType=INTEGER},
+      loans_overdue_count = #{record.loansOverdueCount,jdbcType=INTEGER},
+      loans_latest_time = #{record.loansLatestTime,jdbcType=VARCHAR},
+      loans_long_time = #{record.loansLongTime,jdbcType=INTEGER},
+      history_suc_fee = #{record.historySucFee,jdbcType=INTEGER},
+      history_fail_fee = #{record.historyFailFee,jdbcType=INTEGER},
+      latest_one_month_suc = #{record.latestOneMonthSuc,jdbcType=INTEGER},
+      consfin_org_count = #{record.consfinOrgCount,jdbcType=INTEGER},
+      latest_six_month = #{record.latestSixMonth,jdbcType=INTEGER},
+      loans_cash_count = #{record.loansCashCount,jdbcType=INTEGER},
+      latest_three_month = #{record.latestThreeMonth,jdbcType=INTEGER},
+      loans_latest_time_data = #{record.loansLatestTimeData,jdbcType=INTEGER},
+      latest_one_month_fail = #{record.latestOneMonthFail,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hyy.ifm.mbg.model.ClRcXinyanBehaviorRule">
+    update cl_rc_xinyan_behavior_rule
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="loansOrgCount != null">
+        loans_org_count = #{loansOrgCount,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loansScore != null">
+        loans_score = #{loansScore,jdbcType=INTEGER},
+      </if>
+      <if test="loansCredibility != null">
+        loans_credibility = #{loansCredibility,jdbcType=INTEGER},
+      </if>
+      <if test="loansCount != null">
+        loans_count = #{loansCount,jdbcType=INTEGER},
+      </if>
+      <if test="latestOneMonth != null">
+        latest_one_month = #{latestOneMonth,jdbcType=INTEGER},
+      </if>
+      <if test="loansSettleCount != null">
+        loans_settle_count = #{loansSettleCount,jdbcType=INTEGER},
+      </if>
+      <if test="loansOverdueCount != null">
+        loans_overdue_count = #{loansOverdueCount,jdbcType=INTEGER},
+      </if>
+      <if test="loansLatestTime != null">
+        loans_latest_time = #{loansLatestTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loansLongTime != null">
+        loans_long_time = #{loansLongTime,jdbcType=INTEGER},
+      </if>
+      <if test="historySucFee != null">
+        history_suc_fee = #{historySucFee,jdbcType=INTEGER},
+      </if>
+      <if test="historyFailFee != null">
+        history_fail_fee = #{historyFailFee,jdbcType=INTEGER},
+      </if>
+      <if test="latestOneMonthSuc != null">
+        latest_one_month_suc = #{latestOneMonthSuc,jdbcType=INTEGER},
+      </if>
+      <if test="consfinOrgCount != null">
+        consfin_org_count = #{consfinOrgCount,jdbcType=INTEGER},
+      </if>
+      <if test="latestSixMonth != null">
+        latest_six_month = #{latestSixMonth,jdbcType=INTEGER},
+      </if>
+      <if test="loansCashCount != null">
+        loans_cash_count = #{loansCashCount,jdbcType=INTEGER},
+      </if>
+      <if test="latestThreeMonth != null">
+        latest_three_month = #{latestThreeMonth,jdbcType=INTEGER},
+      </if>
+      <if test="loansLatestTimeData != null">
+        loans_latest_time_data = #{loansLatestTimeData,jdbcType=INTEGER},
+      </if>
+      <if test="latestOneMonthFail != null">
+        latest_one_month_fail = #{latestOneMonthFail,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hyy.ifm.mbg.model.ClRcXinyanBehaviorRule">
+    update cl_rc_xinyan_behavior_rule
+    set user_id = #{userId,jdbcType=BIGINT},
+      phone = #{phone,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=VARCHAR},
+      loans_org_count = #{loansOrgCount,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      loans_score = #{loansScore,jdbcType=INTEGER},
+      loans_credibility = #{loansCredibility,jdbcType=INTEGER},
+      loans_count = #{loansCount,jdbcType=INTEGER},
+      latest_one_month = #{latestOneMonth,jdbcType=INTEGER},
+      loans_settle_count = #{loansSettleCount,jdbcType=INTEGER},
+      loans_overdue_count = #{loansOverdueCount,jdbcType=INTEGER},
+      loans_latest_time = #{loansLatestTime,jdbcType=VARCHAR},
+      loans_long_time = #{loansLongTime,jdbcType=INTEGER},
+      history_suc_fee = #{historySucFee,jdbcType=INTEGER},
+      history_fail_fee = #{historyFailFee,jdbcType=INTEGER},
+      latest_one_month_suc = #{latestOneMonthSuc,jdbcType=INTEGER},
+      consfin_org_count = #{consfinOrgCount,jdbcType=INTEGER},
+      latest_six_month = #{latestSixMonth,jdbcType=INTEGER},
+      loans_cash_count = #{loansCashCount,jdbcType=INTEGER},
+      latest_three_month = #{latestThreeMonth,jdbcType=INTEGER},
+      loans_latest_time_data = #{loansLatestTimeData,jdbcType=INTEGER},
+      latest_one_month_fail = #{latestOneMonthFail,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

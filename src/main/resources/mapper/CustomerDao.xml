@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.dao.CustomerDao">
+    <select id="qryCustomerListNone" resultType="map">
+        SELECT du.id, du.mobile,du.create_time, du.status, du.remark, dui.user_name, dui.zhima_score,
+        dui.id_card, dui.bank_card,uo.pay_amt,du.source,
+        CASE dui.user_auth WHEN null THEN '未认证' WHEN '1' THEN '活体' WHEN '2' THEN '个人信息' WHEN '3' THEN '银行卡' WHEN '4' THEN '联系人' WHEN '5' THEN '运营商'  ELSE '未知' END user_auth
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE (user_name is null or dui.user_auth = '0')
+        <if test="mobile_cnd !='' and mobile_cnd !=null">
+            and du.mobile like concat("%",#{mobile_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="user_name_cnd !='' and user_name_cnd !=null">
+            and dui.user_name like concat("%",#{user_name_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="id_card_cnd !='' and id_card_cnd !=null">
+            and dui.id_card like concat("%",#{id_card_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="bank_card_cnd !='' and bank_card_cnd !=null">
+            and dui.bank_card like concat("%",#{bank_card_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="user_auth_cnd !='' and user_auth_cnd !=null">
+            <choose>
+                <when test="user_auth_cnd == '活体'">
+                    and dui.user_auth like concat("%","1","%")
+                </when>
+                <when test="user_auth_cnd == '个人信息'">
+                    and dui.user_auth like concat("%","2","%")
+                </when>
+                <when test="user_auth_cnd == '银行卡'">
+                    and dui.user_auth like concat("%","3","%")
+                </when>
+                <when test="user_auth_cnd == '联系人'">
+                    and dui.user_auth like concat("%","4","%")
+                </when>
+                <when test="user_auth_cnd == '运营商'">
+                    and dui.user_auth like concat("%","5","%")
+                </when>
+                <when test="user_auth_cnd == '个人信息'">
+                    and dui.user_auth like concat("%","2","%")
+                </when>
+                <otherwise>
+                    and dui.user_auth = #{user_auth_cnd,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
+            and dui.bank_card like concat("%",#{bank_card_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="status_cnd != null and status_cnd != '' ">
+            and du.status = #{status_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="source_cnd != null and source_cnd != '' ">
+            and du.source = #{source_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="create_time_FROM_cnd !='' and create_time_FROM_cnd != null">
+            and du.create_time >= #{create_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="create_time_TO_cnd !='' and create_time_TO_cnd != null">
+            <![CDATA[ and du.create_time <= concat(#{create_time_TO_cnd,jdbcType=VARCHAR}," 23:59:59") ]]>
+        </if>
+        ORDER BY du.create_time desc
+    </select>
+    <select id="qryCustomerList" resultType="map">
+        SELECT du.id, du.mobile,du.create_time, du.status, du.remark, dui.user_name, dui.zhima_score,
+        dui.id_card, dui.bank_card,uo.pay_amt,du.source,
+        CASE dui.user_auth WHEN null THEN '未认证' WHEN '1' THEN '活体' WHEN '2' THEN '个人信息' WHEN '3' THEN '银行卡' WHEN '4' THEN '联系人' WHEN '5' THEN '运营商'  ELSE '未知' END user_auth
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="mobile_cnd !='' and mobile_cnd !=null">
+                and du.mobile like concat("%",#{mobile_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="user_name_cnd !='' and user_name_cnd !=null">
+                and dui.user_name like concat("%",#{user_name_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="id_card_cnd !='' and id_card_cnd !=null">
+                and dui.id_card like concat("%",#{id_card_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="bank_card_cnd !='' and bank_card_cnd !=null">
+                and dui.bank_card like concat("%",#{bank_card_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="user_auth_cnd !='' and user_auth_cnd !=null">
+                <choose>
+                    <when test="user_auth_cnd == '活体'">
+                        and dui.user_auth like concat("%","1","%")
+                    </when>
+                    <when test="user_auth_cnd == '个人信息'">
+                        and dui.user_auth like concat("%","2","%")
+                    </when>
+                    <when test="user_auth_cnd == '银行卡'">
+                        and dui.user_auth like concat("%","3","%")
+                    </when>
+                    <when test="user_auth_cnd == '联系人'">
+                        and dui.user_auth like concat("%","4","%")
+                    </when>
+                    <when test="user_auth_cnd == '运营商'">
+                        and dui.user_auth like concat("%","5","%")
+                    </when>
+                    <when test="user_auth_cnd == '个人信息'">
+                        and dui.user_auth like concat("%","2","%")
+                    </when>
+                    <otherwise>
+                        and dui.user_auth = #{user_auth_cnd,jdbcType=VARCHAR}
+                    </otherwise>
+                </choose>
+                and dui.bank_card like concat("%",#{bank_card_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="status_cnd != null and status_cnd != '' ">
+                and du.status = #{status_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="source_cnd != null and source_cnd != '' ">
+                and du.source = #{source_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="create_time_FROM_cnd !='' and create_time_FROM_cnd != null">
+                and du.create_time >= #{create_time_FROM_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="create_time_TO_cnd !='' and create_time_TO_cnd != null">
+                <![CDATA[ and du.create_time <= concat(#{create_time_TO_cnd,jdbcType=VARCHAR}," 23:59:59") ]]>
+            </if>
+        </trim>
+        ORDER BY du.create_time desc
+    </select>
+    <select id="exportCustomerList" resultType="map">
+        SELECT du.id, du.mobile,du.create_time, du.status, du.remark, dui.user_name, dui.zhima_score,
+        dui.id_card, dui.bank_card
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="mobile_cnd !='' and mobile_cnd !=null">
+                and du.mobile like concat("%",#{mobile_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="user_name_cnd !='' and user_name_cnd !=null">
+                and dui.user_name like concat("%",#{user_name_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="id_card_cnd !='' and id_card_cnd !=null">
+                and dui.id_card like concat("%",#{id_card_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="bank_card_cnd !='' and bank_card_cnd !=null">
+                and dui.bank_card like concat("%",#{bank_card_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="user_auth_cnd !='' and user_auth_cnd !=null">
+                <choose>
+                    <when test="user_auth_cnd == '活体'">
+                        and dui.user_auth like concat("%","1","%")
+                    </when>
+                    <when test="user_auth_cnd == '个人信息'">
+                        and dui.user_auth like concat("%","2","%")
+                    </when>
+                    <when test="user_auth_cnd == '银行卡'">
+                        and dui.user_auth like concat("%","3","%")
+                    </when>
+                    <when test="user_auth_cnd == '联系人'">
+                        and dui.user_auth like concat("%","4","%")
+                    </when>
+                    <when test="user_auth_cnd == '运营商'">
+                        and dui.user_auth like concat("%","5","%")
+                    </when>
+                    <when test="user_auth_cnd == '个人信息'">
+                        and dui.user_auth like concat("%","2","%")
+                    </when>
+                    <otherwise>
+                        and dui.user_auth = #{user_auth_cnd,jdbcType=VARCHAR}
+                    </otherwise>
+                </choose>
+                and dui.bank_card like concat("%",#{bank_card_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="status_cnd != null and status_cnd != '' ">
+                and du.status = #{status_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="source_cnd != null and source_cnd != '' ">
+                and du.source = #{source_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="create_time_FROM_cnd !='' and create_time_FROM_cnd != null">
+                and du.create_time >= #{create_time_FROM_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="create_time_TO_cnd !='' and create_time_TO_cnd != null">
+                <![CDATA[ and du.create_time <= concat(#{create_time_TO_cnd,jdbcType=VARCHAR}," 23:59:59") ]]>
+            </if>
+        </trim>
+        ORDER BY du.create_time desc
+    </select>
+    <select id="qryCustomerMoneyAll" resultType="map">
+        SELECT IFNULL(sum(uo.pay_amt),0.00) as pay_amt
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="mobile_cnd !='' and mobile_cnd !=null">
+                and du.mobile like concat("%",#{mobile_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="user_name_cnd !='' and user_name_cnd !=null">
+                and dui.user_name like concat("%",#{user_name_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="id_card_cnd !='' and id_card_cnd !=null">
+                and dui.id_card like concat("%",#{id_card_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="bank_card_cnd !='' and bank_card_cnd !=null">
+                and dui.bank_card like concat("%",#{bank_card_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="user_auth_cnd !='' and user_auth_cnd !=null">
+                <choose>
+                    <when test="user_auth_cnd == '活体'">
+                        and dui.user_auth like concat("%","1","%")
+                    </when>
+                    <when test="user_auth_cnd == '个人信息'">
+                        and dui.user_auth like concat("%","2","%")
+                    </when>
+                    <when test="user_auth_cnd == '银行卡'">
+                        and dui.user_auth like concat("%","3","%")
+                    </when>
+                    <when test="user_auth_cnd == '联系人'">
+                        and dui.user_auth like concat("%","4","%")
+                    </when>
+                    <when test="user_auth_cnd == '运营商'">
+                        and dui.user_auth like concat("%","5","%")
+                    </when>
+                    <when test="user_auth_cnd == '个人信息'">
+                        and dui.user_auth like concat("%","2","%")
+                    </when>
+                    <otherwise>
+                        and dui.user_auth = #{user_auth_cnd,jdbcType=VARCHAR}
+                    </otherwise>
+                </choose>
+                and dui.bank_card like concat("%",#{bank_card_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="status_cnd != null and status_cnd != '' ">
+                and du.status = #{status_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="source_cnd != null and source_cnd != '' ">
+                and du.source = #{source_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="create_time_FROM_cnd !='' and create_time_FROM_cnd != null">
+                and du.create_time >= #{create_time_FROM_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="create_time_TO_cnd !='' and create_time_TO_cnd != null">
+                <![CDATA[ and du.create_time <= concat(#{create_time_TO_cnd,jdbcType=VARCHAR}," 23:59:59") ]]>
+            </if>
+        </trim>
+        ORDER BY du.create_time desc
+    </select>
+    <select id="qryPayAmt" resultType="map">
+        select ifnull(sum(amt),0.00) amt from ${tableName}
+        where status = '1'
+        <if test="item.pay_time_FROM_cnd !='' and item.pay_time_FROM_cnd != null">
+            and create_time >= #{item.pay_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="item.pay_time_TO_cnd !='' and item.pay_time_TO_cnd != null">
+            <![CDATA[ and create_time <= #{item.pay_time_TO_cnd,jdbcType=VARCHAR} ]]>
+        </if>
+    </select>
+    <select id="qrySysNameAllMoney" resultType="map">
+        SELECT IFNULL(sum(uo.pay_amt),0.00) as pay_amt
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE du.source = #{source,jdbcType=VARCHAR}
+    </select>
+    <select id="qryCustomerById" resultType="map">
+        SELECT du.id, du.mobile, du.create_time, dui.user_name, dui.zhima_score, dui.job,
+        CASE du.status WHEN '0' THEN '正常' WHEN '1' THEN '禁用' ELSE '未知' END status,
+        CASE dui.sex WHEN '0' THEN '男' WHEN '1' THEN '女' ELSE '未知' END sex,
+        CASE dui.user_auth WHEN '0' THEN '未认证' WHEN '1' THEN '活体' WHEN '2' THEN '个人信息' WHEN '3' THEN '银行卡' WHEN '4' THEN '联系人' WHEN '5' THEN '运营商'  ELSE '未知' END mobile_auth,
+        dui.bank_card, dui.bank_open
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        WHERE du.id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="countCustomerList" resultType="int">
+        SELECT count(1) count
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="user_auth_cnd != null and user_auth_cnd != '' ">
+                and dui.user_auth = #{user_auth_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="source_cnd != null and source_cnd != '' ">
+                and du.source = #{source_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="create_time_FROM_cnd !='' and create_time_FROM_cnd != null">
+                and du.create_time >= #{create_time_FROM_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="create_time_TO_cnd !='' and create_time_TO_cnd != null">
+                <![CDATA[ and du.create_time <= concat(#{create_time_TO_cnd,jdbcType=VARCHAR}," 23:59:59") ]]>
+            </if>
+        </trim>
+    </select>
+    <select id="countCustomerListNone" resultType="int">
+        SELECT count(1) count
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE (user_name is null or dui.user_auth = '0')
+        <if test="user_auth_cnd != null and user_auth_cnd != '' ">
+            and dui.user_auth = #{user_auth_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="source_cnd != null and source_cnd != '' ">
+            and du.source = #{source_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="create_time_FROM_cnd !='' and create_time_FROM_cnd != null">
+            and du.create_time >= #{create_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="create_time_TO_cnd !='' and create_time_TO_cnd != null">
+            <![CDATA[ and du.create_time <= concat(#{create_time_TO_cnd,jdbcType=VARCHAR}," 23:59:59") ]]>
+        </if>
+    </select>
+    <select id="qryRefund" resultType="map">
+        SELECT du.id, du.mobile,du.create_time, du.status, du.remark, dui.user_name, dui.zhima_score,
+        dui.id_card, dui.bank_card,uo.pay_amt,du.source,
+        CASE dui.user_auth WHEN null THEN '未认证' WHEN '1' THEN '活体' WHEN '2' THEN '个人信息' WHEN '3' THEN '银行卡' WHEN '4' THEN '联系人' WHEN '5' THEN '运营商'  ELSE '未知' END user_auth
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1
+        <if test="mobile_cnd != null and mobile_cnd != '' ">
+            and du.mobile = #{mobile_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="id_card_cnd != null and id_card_cnd != '' ">
+            and dui.id_card = #{id_card_cnd,jdbcType=VARCHAR}
+        </if>
+        and uo.user_auth != '5'
+        and uo.sys_user_id is null
+        ORDER BY du.create_time desc
+    </select>
+    <select id="qryMyRefund" resultType="map">
+        SELECT du.id, du.mobile,du.create_time, du.status, du.remark, dui.user_name, dui.zhima_score,
+        dui.id_card, dui.bank_card,uo.pay_amt,du.source,uo.user_auth refundStatus,
+        CASE dui.user_auth WHEN null THEN '未认证' WHEN '1' THEN '活体' WHEN '2' THEN '个人信息' WHEN '3' THEN '银行卡' WHEN '4' THEN '联系人' WHEN '5' THEN '运营商'  ELSE '未知' END user_auth
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1
+        and uo.sys_user_id = #{sysUserId,jdbcType=INTEGER}
+        <if test="item.mobile_cnd != null and item.mobile_cnd != '' ">
+            and du.mobile = #{item.mobile_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="item.id_card_cnd != null and item.id_card_cnd != '' ">
+            and dui.id_card = #{item.id_card_cnd,jdbcType=VARCHAR}
+        </if>
+        ORDER BY du.create_time desc
+    </select>
+    <select id="qryRefundList" resultType="map">
+        SELECT du.id, du.mobile,du.create_time, du.status, du.remark, dui.user_name, dui.zhima_score,
+        dui.id_card, dui.bank_card,uo.pay_amt,du.source,uo.user_auth refundStatus,uo.refund_amt,
+        CASE dui.user_auth WHEN null THEN '未认证' WHEN '1' THEN '活体' WHEN '2' THEN '个人信息' WHEN '3' THEN '银行卡' WHEN '4' THEN '联系人' WHEN '5' THEN '运营商'  ELSE '未知' END user_auth
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1
+        <if test="mobile_cnd != null and mobile_cnd != '' ">
+            and du.mobile = #{mobile_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="id_card_cnd != null and id_card_cnd != '' ">
+            and dui.id_card = #{id_card_cnd,jdbcType=VARCHAR}
+        </if>
+        and uo.user_auth in('1','2','3','4')
+        ORDER BY du.create_time desc
+    </select>
+    <select id="listStatistics" resultType="map">
+        select
+        su.userId,
+        su.USER_NAME,
+        ifnull(three.cnt, 0) audit_new,
+        ifnull(one.cnt, 0) new_pass_cnt,
+        ifnull(two.cnt, 0) new_reject_cnt,
+        ifnull(ifnull(one.cnt, 0)/ifnull(three.cnt, 0), 0) new_pass_rate,
+        ifnull(ifnull(two.cnt, 0)/ifnull(three.cnt, 0), 0) new_reject_rate
+        from ifm_sys_user su
+        left join
+        (SELECT
+        su.userId, count(uo.id) cnt
+        FROM
+        user_order uo
+        left join ifm_sys_user su on uo.sys_user_id= su.userId
+        where uo.refund_time is not null and uo.user_auth in('1','2','3','4')
+        and su.STATUS = '2'
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and uo.refund_time >= #{visit_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and uo.refund_time <= #{visit_time_TO_cnd,jdbcType=VARCHAR} ]]>
+        </if>
+        group by su.userId) one
+        on su.userId = one.userId
+        left join
+        (SELECT
+        su.userId,count(uo.id) cnt
+        FROM
+        user_order uo
+        left join ifm_sys_user su on uo.sys_user_id= su.userId
+        where uo.refund_time is not null and uo.user_auth = '0'
+        and su.STATUS = '2'
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and uo.refund_time >= #{visit_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and uo.refund_time <= #{visit_time_TO_cnd,jdbcType=VARCHAR} ]]>
+        </if>
+        group by su.userId) two
+        on su.userId = two.userId
+        left join
+        (SELECT
+        su.userId, count(uo.id) cnt
+        FROM
+        user_order uo
+        left join ifm_sys_user su on uo.sys_user_id= su.userId
+        where uo.sys_user_id is not null
+        and su.STATUS = '2'
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and uo.refund_time >= #{visit_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and uo.refund_time <= #{visit_time_TO_cnd,jdbcType=VARCHAR} ]]>
+        </if>
+        group by su.userId) three
+        on su.userId = three.userId
+        left join ifm_user_role sur on su.userId = sur.user_id
+        left join ifm_sys_role sr on sur.ROLE_ID = sr.roleId
+        where sr.ROLE_CODE in ('service')and su.STATUS = '2'
+        <if test="user_name_cnd !='' and user_name_cnd !=null">
+            and su.USER_NAME like concat("%",#{user_name_cnd,jdbcType=VARCHAR},"%")
+        </if>
+    </select>
+    <select id="mailRefundList" resultType="map">
+        SELECT du.id, du.mobile,du.create_time, du.status, du.remark, dui.user_name, dui.zhima_score,
+        dui.id_card, dui.bank_card,uo.pay_amt,du.source,xo.request_no,xo.amt,uo.user_auth as ua,
+        CASE dui.user_auth WHEN null THEN '未认证' WHEN '1' THEN '活体' WHEN '2' THEN '个人信息' WHEN '3' THEN '银行卡' WHEN '4' THEN '联系人' WHEN '5' THEN '运营商'  ELSE '未知' END user_auth
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        left join xf_order_success as xo on xo.user_id = du.id
+        where uo.pay_amt is not null and xo.`status` = '1'
+        <if test="mobile_cnd != null and mobile_cnd != '' ">
+            and du.mobile like concat("%",#{mobile_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="id_card_cnd != null and id_card_cnd != '' ">
+            and dui.id_card like concat("%",#{mobile_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="bank_card_cnd != null and bank_card_cnd != '' ">
+            and dui.bank_card like concat("%",#{bank_card_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="request_no_cnd != null and request_no_cnd != '' ">
+            and xo.request_no like concat("%",#{request_no_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        ORDER BY du.create_time desc
+    </select>
+    <select id="qryUserOrderByStatus" resultMap="com.hyy.ifm.mbg.mapper.UserOrderMapper.BaseResultMap">
+        SELECT id, user_id, order_no, apply_time, apply_bank_time, apply_amt, repay_amt, pay_time,
+        status, pay_amt, bank_no, bank, user_auth, reback_amt, sys_user_id, refund_amt, refund_time
+        FROM user_order
+        where status = '0'
+        ORDER BY apply_time desc
+    </select>
+</mapper>

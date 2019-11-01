@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.dao.DcProductVisitManageDao">
+    <select id="qryProductVisitManageList" resultType="com.hyy.ifm.dto.DcProductVisitManageResult">
+        select dpvm.id ,dpvm.money ,dp.name,dpvm.count,dpvm.create_time,dpvm.status
+        from dc_product_visit_manage dpvm
+        left join dc_product dp on dpvm.product_id = dp.id
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="name_cnd !='' and name_cnd !=null">
+                and dp.name like concat("%",#{name_cnd,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="create_time_FROM_cnd !='' and create_time_FROM_cnd != null">
+                and dpvm.create_time >= #{create_time_FROM_cnd,jdbcType=VARCHAR}
+            </if>
+            <if test="create_time_TO_cnd !='' and create_time_TO_cnd != null">
+                <![CDATA[ and dpvm.create_time <= concat(#{create_time_TO_cnd,jdbcType=VARCHAR}," 23:59:59") ]]>
+            </if>
+        </trim>
+        ORDER BY dpvm.create_time desc
+    </select>
+    <select id="qryVisitProductListAll" resultType="map">
+        SELECT dp.id, dp.name
+        FROM dc_product AS dp
+        where dp.status != "2"
+        and dp.id not in (SELECT d.product_id FROM dc_product_visit_manage d where d.status in ("0","1"))
+    </select>
+    <select id="qryProductVisitCount" resultType="map">
+        SELECT ifnull(sum(dpvl.count),0)count
+        FROM dc_product_visit_log AS dpvl
+        WHERE dpvl.product_id = @productId
+        AND DAY(dpvl.visit_time)=DAY(NOW())
+    </select>
+
+</mapper>

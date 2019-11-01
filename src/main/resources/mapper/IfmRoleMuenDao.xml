@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.dao.IfmRoleMuenDao">
+    <!--批量新增回写主键支持-->
+    <insert id="insertList">
+        INSERT INTO ifm_role_muen (ROLE_ID, MUEN_ID) VALUES
+        <foreach collection="list" separator="," item="item" index="index">
+            (#{item.roleId,jdbcType=INTEGER},
+            #{item.muenId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+    <select id="qryAllMuens" resultType="map">
+        select
+        t.muenId id,t.muen_name name,t.parent_muen_id pid,t1.muen_name pname,t.`status`,t.xh,t.uri,
+        case when t.parent_muen_id=0 then '/static/js/ztree/css/zTreeStyle/img/diy/home.png' else '/static/js/ztree/css/zTreeStyle/img/diy/dept1.png' end as icon,
+        case when t.parent_muen_id=0 then 'true' else '' end as open
+        from IFM_SYS_MUEN t
+        left join IFM_SYS_MUEN t1 on t1.muenId=t.PARENT_MUEN_ID
+        where t.status = '0'
+        order by t.PARENT_MUEN_ID,t.muenId
+    </select>
+</mapper>

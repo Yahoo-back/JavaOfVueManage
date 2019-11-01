@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.mbg.mapper.AppYoudunResultMapper">
+  <resultMap id="BaseResultMap" type="com.hyy.ifm.mbg.model.AppYoudunResult">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="partner_order_id" jdbcType="VARCHAR" property="partnerOrderId" />
+    <result column="id_number" jdbcType="VARCHAR" property="idNumber" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="verify_status" jdbcType="VARCHAR" property="verifyStatus" />
+    <result column="similarity" jdbcType="VARCHAR" property="similarity" />
+    <result column="auth_result" jdbcType="VARCHAR" property="authResult" />
+    <result column="fail_reason" jdbcType="VARCHAR" property="failReason" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hyy.ifm.mbg.model.AppYoudunResult">
+    <result column="idcard_front_photo" jdbcType="LONGVARCHAR" property="idcardFrontPhoto" />
+    <result column="idcard_back_photo" jdbcType="LONGVARCHAR" property="idcardBackPhoto" />
+    <result column="living_photo" jdbcType="LONGVARCHAR" property="livingPhoto" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_id, partner_order_id, id_number, address, verify_status, similarity, auth_result, 
+    fail_reason, create_date, status
+  </sql>
+  <sql id="Blob_Column_List">
+    idcard_front_photo, idcard_back_photo, living_photo
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.hyy.ifm.mbg.model.AppYoudunResultExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from app_youdun_result
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.hyy.ifm.mbg.model.AppYoudunResultExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from app_youdun_result
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from app_youdun_result
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from app_youdun_result
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hyy.ifm.mbg.model.AppYoudunResultExample">
+    delete from app_youdun_result
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hyy.ifm.mbg.model.AppYoudunResult">
+    insert into app_youdun_result (id, user_id, partner_order_id, 
+      id_number, address, verify_status, 
+      similarity, auth_result, fail_reason, 
+      create_date, status, idcard_front_photo, 
+      idcard_back_photo, living_photo)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{partnerOrderId,jdbcType=VARCHAR}, 
+      #{idNumber,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{verifyStatus,jdbcType=VARCHAR}, 
+      #{similarity,jdbcType=VARCHAR}, #{authResult,jdbcType=VARCHAR}, #{failReason,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, #{idcardFrontPhoto,jdbcType=LONGVARCHAR}, 
+      #{idcardBackPhoto,jdbcType=LONGVARCHAR}, #{livingPhoto,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hyy.ifm.mbg.model.AppYoudunResult">
+    insert into app_youdun_result
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="partnerOrderId != null">
+        partner_order_id,
+      </if>
+      <if test="idNumber != null">
+        id_number,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="verifyStatus != null">
+        verify_status,
+      </if>
+      <if test="similarity != null">
+        similarity,
+      </if>
+      <if test="authResult != null">
+        auth_result,
+      </if>
+      <if test="failReason != null">
+        fail_reason,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="idcardFrontPhoto != null">
+        idcard_front_photo,
+      </if>
+      <if test="idcardBackPhoto != null">
+        idcard_back_photo,
+      </if>
+      <if test="livingPhoto != null">
+        living_photo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="partnerOrderId != null">
+        #{partnerOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="idNumber != null">
+        #{idNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyStatus != null">
+        #{verifyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="similarity != null">
+        #{similarity,jdbcType=VARCHAR},
+      </if>
+      <if test="authResult != null">
+        #{authResult,jdbcType=VARCHAR},
+      </if>
+      <if test="failReason != null">
+        #{failReason,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardFrontPhoto != null">
+        #{idcardFrontPhoto,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="idcardBackPhoto != null">
+        #{idcardBackPhoto,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="livingPhoto != null">
+        #{livingPhoto,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hyy.ifm.mbg.model.AppYoudunResultExample" resultType="java.lang.Integer">
+    select count(*) from app_youdun_result
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update app_youdun_result
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.partnerOrderId != null">
+        partner_order_id = #{record.partnerOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.idNumber != null">
+        id_number = #{record.idNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null">
+        address = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.verifyStatus != null">
+        verify_status = #{record.verifyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.similarity != null">
+        similarity = #{record.similarity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authResult != null">
+        auth_result = #{record.authResult,jdbcType=VARCHAR},
+      </if>
+      <if test="record.failReason != null">
+        fail_reason = #{record.failReason,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null">
+        create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.idcardFrontPhoto != null">
+        idcard_front_photo = #{record.idcardFrontPhoto,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.idcardBackPhoto != null">
+        idcard_back_photo = #{record.idcardBackPhoto,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.livingPhoto != null">
+        living_photo = #{record.livingPhoto,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update app_youdun_result
+    set id = #{record.id,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      partner_order_id = #{record.partnerOrderId,jdbcType=VARCHAR},
+      id_number = #{record.idNumber,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
+      verify_status = #{record.verifyStatus,jdbcType=VARCHAR},
+      similarity = #{record.similarity,jdbcType=VARCHAR},
+      auth_result = #{record.authResult,jdbcType=VARCHAR},
+      fail_reason = #{record.failReason,jdbcType=VARCHAR},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=VARCHAR},
+      idcard_front_photo = #{record.idcardFrontPhoto,jdbcType=LONGVARCHAR},
+      idcard_back_photo = #{record.idcardBackPhoto,jdbcType=LONGVARCHAR},
+      living_photo = #{record.livingPhoto,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update app_youdun_result
+    set id = #{record.id,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      partner_order_id = #{record.partnerOrderId,jdbcType=VARCHAR},
+      id_number = #{record.idNumber,jdbcType=VARCHAR},
+      address = #{record.address,jdbcType=VARCHAR},
+      verify_status = #{record.verifyStatus,jdbcType=VARCHAR},
+      similarity = #{record.similarity,jdbcType=VARCHAR},
+      auth_result = #{record.authResult,jdbcType=VARCHAR},
+      fail_reason = #{record.failReason,jdbcType=VARCHAR},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hyy.ifm.mbg.model.AppYoudunResult">
+    update app_youdun_result
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="partnerOrderId != null">
+        partner_order_id = #{partnerOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="idNumber != null">
+        id_number = #{idNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyStatus != null">
+        verify_status = #{verifyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="similarity != null">
+        similarity = #{similarity,jdbcType=VARCHAR},
+      </if>
+      <if test="authResult != null">
+        auth_result = #{authResult,jdbcType=VARCHAR},
+      </if>
+      <if test="failReason != null">
+        fail_reason = #{failReason,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardFrontPhoto != null">
+        idcard_front_photo = #{idcardFrontPhoto,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="idcardBackPhoto != null">
+        idcard_back_photo = #{idcardBackPhoto,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="livingPhoto != null">
+        living_photo = #{livingPhoto,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hyy.ifm.mbg.model.AppYoudunResult">
+    update app_youdun_result
+    set user_id = #{userId,jdbcType=INTEGER},
+      partner_order_id = #{partnerOrderId,jdbcType=VARCHAR},
+      id_number = #{idNumber,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      verify_status = #{verifyStatus,jdbcType=VARCHAR},
+      similarity = #{similarity,jdbcType=VARCHAR},
+      auth_result = #{authResult,jdbcType=VARCHAR},
+      fail_reason = #{failReason,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+      idcard_front_photo = #{idcardFrontPhoto,jdbcType=LONGVARCHAR},
+      idcard_back_photo = #{idcardBackPhoto,jdbcType=LONGVARCHAR},
+      living_photo = #{livingPhoto,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hyy.ifm.mbg.model.AppYoudunResult">
+    update app_youdun_result
+    set user_id = #{userId,jdbcType=INTEGER},
+      partner_order_id = #{partnerOrderId,jdbcType=VARCHAR},
+      id_number = #{idNumber,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      verify_status = #{verifyStatus,jdbcType=VARCHAR},
+      similarity = #{similarity,jdbcType=VARCHAR},
+      auth_result = #{authResult,jdbcType=VARCHAR},
+      fail_reason = #{failReason,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

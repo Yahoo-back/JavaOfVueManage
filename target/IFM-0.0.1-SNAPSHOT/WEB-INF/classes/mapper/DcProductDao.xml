@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.dao.DcProductDao">
+    <select id="qryProductList" resultType="map">
+        SELECT dp.id, dp.name, dpc.name classify, dp.interest, dp.link, dp.description, dp.manager_url, dp.manager_user, dp.manager_password,
+        dp.create_time, dp.status, dp.sort, dp.position, dp.is_hot, dp.hot_sort
+        FROM dc_product AS dp
+        LEFT JOIN dc_product_classify AS dpc ON dpc.id = dp.classify_id
+        WHERE dp.status IN ('0', '1')
+        <if test="name_cnd !='' and name_cnd !=null">
+            and dp.name like concat("%",#{name_cnd,jdbcType=VARCHAR},"%")
+        </if>
+        <if test="classify_cnd !='' and classify_cnd !=null">
+            and dpc.id = #{classify_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="status_cnd !='' and status_cnd !=null">
+            and dp.status = #{status_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="is_hot_cnd !='' and is_hot_cnd !=null">
+            and dp.is_hot = #{is_hot_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="position_cnd != null and position_cnd != '' ">
+            and dp.position = #{position_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="create_time_FROM_cnd != '' and create_time_FROM_cnd != null">
+            and dp.create_time >= #{create_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="create_time_TO_cnd != '' and create_time_TO_cnd != null">
+            <![CDATA[ and dp.create_time <= concat(#{create_time_TO_cnd,jdbcType=VARCHAR}," 23:59:59") ]]>
+        </if>
+        ORDER BY dp.sort asc,dp.hot_sort asc,dp.position desc, dp.status desc, dp.create_time desc
+    </select>
+    <select id="qryProductCompanyAll" resultType="map">
+        select
+            distinct company
+        from dc_product
+        WHERE status = '1'
+    </select>
+    <select id="qryProductListWithOutDelete" resultMap="com.hyy.ifm.mbg.mapper.DcProductMapper.BaseResultMap">
+        select
+        id, name, logo, classify_id, interest, ktx_desc, money, link, settle_way, perio_way,
+        periodization, condition_list, data_list, contact, contact_info, manager_url, manager_user,
+        manager_password, company, create_time, status, is_hot, hot_sort, sort, apply_num,
+        position, settle_cycle, settle_way_cpa, settle_way_cps
+        from dc_product
+        WHERE status != '2'
+    </select>
+
+</mapper>

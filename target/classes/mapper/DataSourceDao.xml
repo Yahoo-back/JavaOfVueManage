@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.dao.DataSourceDao">
+    <select id="qrySourceAll" resultType="map">
+        SELECT DISTINCT source
+        FROM dc_visit_log WHERE classify = '3' and source != ''
+    </select>
+    <select id="qryRegisterAndUvCount" resultType="map">
+        SELECT ifnull(sum(dvl.count),0) countCount , ifnull(sum(dvl.count_uv),0) countUvCount ,ifnull(sum(dvl.uv),0) uvCount
+        FROM dc_visit_log AS dvl
+        WHERE dvl.classify = '3'
+        <if test="source_cnd != null and source_cnd != '' ">
+            and dvl.source = #{source_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and dvl.visit_time >= concat(#{visit_time_FROM_cnd,jdbcType=VARCHAR},":00:00")
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and dvl.visit_time <= concat(#{visit_time_TO_cnd,jdbcType=VARCHAR},":00:00") ]]>
+        </if>
+        ORDER BY dvl.visit_time desc
+    </select>
+    <select id="qryDataRoorList" resultType="map">
+        select dvl.source ,ifnull(log.count,0)  count ,ifnull(log.count_uv ,0) count_uv,ifnull(log.uv ,0) uv,ifnull(a.a_count,0) none
+        ,ifnull(b.b_count,0) face,ifnull(c.c_count,0) per,ifnull(d.d_count,0) bank,ifnull(e.e_count,0) concat,ifnull(f.f_count,0) yun
+        ,ifnull(g.pay_amt,0.00) pay
+        from dc_visit_log  dvl
+        left join (
+        select source, id ,sum(count) count ,sum(count_uv) count_uv , sum(uv) uv
+        from dc_visit_log dvl
+        where classify = '3'
+        <if test="item.visit_time_FROM_cnd !='' and item.visit_time_FROM_cnd != null">
+        and dvl.visit_time >= #{item.visit_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="item.visit_time_TO_cnd !='' and item.visit_time_TO_cnd != null">
+            <![CDATA[ and dvl.visit_time <= #{item.visit_time_TO_cnd,jdbcType=VARCHAR} ]]>
+        </if>
+         ${condition2}
+        group by source
+        ) log on dvl.id = log.id
+        left join (
+        SELECT count(1) a_count ,du.source a_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and (user_name is null or dui.user_auth = '0') ${condition3}
+        group by du.source
+        ) a on dvl.source = a.a_source
+
+        left join (
+        SELECT count(1) b_count ,du.source b_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '1' ${condition3}
+        group by du.source
+        ) b on dvl.source = b.b_source
+
+        left join (
+        SELECT count(1) c_count ,du.source c_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '2' ${condition3}
+        group by du.source
+        ) c on dvl.source = c.c_source
+
+        left join (
+        SELECT count(1) d_count ,du.source d_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '3' ${condition3}
+        group by du.source
+        ) d on dvl.source = d.d_source
+
+        left join (
+        SELECT count(1) e_count ,du.source e_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '4' ${condition3}
+        group by du.source
+        ) e on dvl.source = e.e_source
+
+        left join (
+        SELECT count(1) f_count ,du.source f_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '5' ${condition3}
+        group by du.source
+        ) f on dvl.source = f.f_source
+
+        left join(
+        SELECT IFNULL(sum(uo.pay_amt),0.00) as pay_amt,du.source g_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1 ${condition3}
+        group by du.source
+        ) g on dvl.source = g.g_source
+        where 1=1 ${condition2}
+        group by dvl.source
+    </select>
+    <select id="qryDataRoorList1" resultType="map">
+       select dvl.source ,ifnull(log.count,0)  count ,ifnull(log.count_uv ,0) count_uv,ifnull(log.uv ,0) uv,ifnull(a.a_count,0) none
+        ,ifnull(b.b_count,0) face,ifnull(c.c_count,0) per,ifnull(d.d_count,0) bank,ifnull(e.e_count,0) concat,ifnull(f.f_count,0) yun
+        ,ifnull(g.pay_amt,0.00) pay
+        from dc_visit_log  dvl
+        left join (
+        select source, id ,sum(count) count ,sum(count_uv) count_uv , sum(uv) uv
+        from dc_visit_log dvl
+        where classify = '3'
+        <if test="item.visit_time_FROM_cnd !='' and item.visit_time_FROM_cnd != null">
+            and dvl.visit_time >= #{item.visit_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="item.visit_time_TO_cnd !='' and item.visit_time_TO_cnd != null">
+            <![CDATA[ and dvl.visit_time <= #{item.visit_time_TO_cnd,jdbcType=VARCHAR} ]]>
+        </if>
+        group by source
+        ) log on dvl.id = log.id
+        left join (
+        SELECT count(1) a_count ,du.source a_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and (user_name is null or dui.user_auth = '0') ${condition3}
+        group by du.source
+        ) a on dvl.source = a.a_source
+
+        left join (
+        SELECT count(1) b_count ,du.source b_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '1' ${condition3}
+        group by du.source
+        ) b on dvl.source = b.b_source
+
+        left join (
+        SELECT count(1) c_count ,du.source c_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '2' ${condition3}
+        group by du.source
+        ) c on dvl.source = c.c_source
+
+        left join (
+        SELECT count(1) d_count ,du.source d_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '3' ${condition3}
+        group by du.source
+        ) d on dvl.source = d.d_source
+
+        left join (
+        SELECT count(1) e_count ,du.source e_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '4' ${condition3}
+        group by du.source
+        ) e on dvl.source = e.e_source
+
+        left join (
+        SELECT count(1) f_count ,du.source f_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        left join (select * from ifm_sys_login ) as a on a.USER_CODE = du.source
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '5' ${condition3}
+        group by du.source
+        ) f on dvl.source = f.f_source
+
+        left join(
+        SELECT IFNULL(sum(uo.pay_amt),0.00) as pay_amt,du.source g_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1 ${condition3}
+        group by du.source
+        ) g on dvl.source = g.g_source
+        group by dvl.source
+    </select>
+    <select id="qryDataEchartsSourceBySource" resultType="map">
+        select DATE_FORMAT(a.click_date,'%Y-%m-%d %H:%i:%s') click_date,ifnull(c.uv,0) count
+        from (
+           ${condition}
+        ) a
+        LEFT JOIN (
+            SELECT dvl.id, dvl.visit_time,dvl.uv, dvl.source
+            FROM dc_visit_log AS dvl WHERE 1=1 AND classify = '3'
+            AND dvl.source = #{item.source,jdbcType=VARCHAR}
+        ) c on a.click_date = c.visit_time
+        ORDER BY a.click_date
+    </select>
+    <select id="qryQuDaoSl" resultType="map">
+        select * from sl_qdao where source = #{source,jdbcType=VARCHAR}
+    </select>
+    <select id="qryDataSumList" resultType="map">
+        SELECT  dvl.id, dvl.classify, dvl.visit_time, IFNULL(sum(dvl.count),0) count, dvl.source,
+        IFNULL(sum(dvl.count_uv),0)AS count_uv,IFNULL(sum(dvl.uv) ,0) uv,
+        ifnull(sum(a.count),0) none
+        ,ifnull(sum(b.count),0) face,ifnull(sum(c.count),0) per,ifnull(sum(d.count),0) bank,
+        ifnull(sum(e.count),0) concat,ifnull(sum(f.count),0) yun
+        FROM dc_visit_log AS dvl
+        left join  ifm_sys_login isl on isl.USER_CODE = dvl.source
+        left join (
+        SELECT count(1) count ,du.source, DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00') create_time
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and (user_name is null or dui.user_auth = '0') and du.source= #{userCode,jdbcType=VARCHAR}
+        Group By DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00')
+        ) a on dvl.source = a.source  and a.create_time =  dvl.visit_time
+
+        left join (
+        SELECT count(1) count ,du.source, DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00') create_time
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '1' and du.source= #{userCode,jdbcType=VARCHAR}
+        Group By DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00')
+        ) b on dvl.source = b.source  and b.create_time =  dvl.visit_time
+
+        left join (
+        SELECT count(1) count ,du.source, DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00') create_time
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '2' and du.source= #{userCode,jdbcType=VARCHAR}
+        Group By DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00')
+        ) c on dvl.source = c.source  and c.create_time =  dvl.visit_time
+        left join (
+        SELECT count(1) count ,du.source, DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00') create_time
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '3' and du.source= #{userCode,jdbcType=VARCHAR}
+        Group By DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00')
+        ) d on dvl.source = d.source  and d.create_time =  dvl.visit_time
+        left join (
+        SELECT count(1) count ,du.source, DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00') create_time
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '4' and du.source= #{userCode,jdbcType=VARCHAR}
+        Group By DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00')
+        ) e on dvl.source = e.source  and e.create_time =  dvl.visit_time
+        left join (
+        SELECT count(1) count ,du.source, DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00') create_time
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1  and  dui.user_auth = '5' and du.source= #{userCode,jdbcType=VARCHAR}
+        Group By DATE_FORMAT(du.create_time,'%Y-%m-%d %H:00:00')
+        ) f on dvl.source = f.source  and f.create_time =  dvl.visit_time
+        WHERE 1=1 AND dvl.classify = '3' and dvl.source = #{userCode,jdbcType=VARCHAR}
+        and dvl.visit_time >= DATE_FORMAT(#{startTime,jdbcType=VARCHAR},'%Y-%m-%d %H:00:00') <![CDATA[ and dvl.visit_time < DATE_FORMAT(#{endTime,jdbcType=VARCHAR},'%Y-%m-%d %H:00:00') ]]>
+        Group By dvl.visit_time
+        ORDER BY dvl.visit_time desc
+    </select>
+    <select id="qryQuDaoLoan" resultType="map">
+        select count(1)count from dc_user du
+        LEFT JOIN dc_user_info dui on dui.user_id = du.id
+        LEFT JOIN xf_order xo on xo.user_id = du.id
+        where du.source = #{userCode,jdbcType=VARCHAR} and xo.amt = '299' and xo.`status` = 1
+         and dui.user_auth = 5 and DATE_FORMAT(du.create_time,'%Y-%m-%d') = DATE_FORMAT(xo.pay_date,'%Y-%m-%d')
+        <![CDATA[ and du.create_time <= #{startTime,jdbcType=VARCHAR}]]>
+        and du.create_time >= #{endTime,jdbcType=VARCHAR}
+
+    </select>
+    <select id="qryQuDaoSlAllSource" resultType="map">
+        select * from sl_qdao as dvl
+        left join  ifm_sys_login isl on dvl.login_id = isl.lgnId
+        where 1=1
+        <if test="item.source_cnd != null and item.source_cnd != '' ">
+            and dvl.source = #{item.source_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="item.visit_time_FROM_cnd !='' and item.visit_time_FROM_cnd != null">
+            and dvl.update_time >= concat(#{item.visit_time_FROM_cnd,jdbcType=VARCHAR},":00:00")
+        </if>
+        <if test="item.visit_time_TO_cnd !='' and item.visit_time_TO_cnd != null">
+            <![CDATA[ and dvl.update_time <= concat(#{item.visit_time_TO_cnd,jdbcType=VARCHAR},":00:00") ]]>
+        </if>
+        <if test="userId != '13' ">
+            and isl.openLgnId = #{userId,jdbcType=INTEGER}
+        </if>
+        ORDER BY update_time desc
+    </select>
+    <select id="countDayOfVisitCountByProduct" resultType="map">
+        SELECT IFNULL(SUM(dpvl.count),0) count
+        FROM dc_product_visit_log AS dpvl
+        WHERE dpvl.product_id = #{productId,jdbcType=INTEGER} AND date_format(dpvl.visit_time,'%Y-%m-%d') = date_sub(DATE_FORMAT(now(),'%Y-%m-%d'), interval 1 DAY) AND dpvl.type = '0'
+    </select>
+</mapper>

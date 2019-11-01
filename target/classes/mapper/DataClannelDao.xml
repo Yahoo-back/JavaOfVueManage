@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.dao.DataClannelDao">
+    <select id="findWithholdPayBySource" resultType="map">
+        select dvl.source ,ifnull(g.pay_amt,0.00) pay
+        from dc_visit_log  dvl
+        left join(
+        SELECT IFNULL(sum(uo.pay_amt),0.00) as pay_amt,du.source g_source
+        FROM dc_user AS du
+        LEFT JOIN dc_user_info AS dui ON dui.user_id = du.id
+        LEFT JOIN user_order AS uo on uo.user_id = du.id
+        WHERE 1=1
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and du.create_time >= #{visit_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and du.create_time <= #{visit_time_TO_cnd,jdbcType=VARCHAR} ]]>
+        </if>
+        group by du.source
+        ) g on dvl.source = g.g_source
+        where 1=1
+        <if test="source_cnd !='' and source_cnd !=null">
+            and source = #{source_cnd,jdbcType=VARCHAR}
+        </if>
+        group by dvl.source
+    </select>
+    <select id="findClickCpaPayBySource" resultType="map">
+        select du.source , du.create_time , dp.name ,count(du.source) count,dp.settle_way_cpa cpa
+        from dc_product_distinct  dpd
+        left join dc_user du on du.mobile = dpd.mobile
+        left join dc_product dp on dpd.porduct_id = dp.id
+        where 1 = 1
+        <if test="source_cnd !='' and source_cnd !=null">
+            and du.source = #{source_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and du.create_time >= #{visit_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and du.create_time <= #{visit_time_TO_cnd,jdbcType=VARCHAR} ]]>
+        </if>
+        Group By dp.name
+    </select>
+    <select id="findUserBySource" resultType="map">
+        select du.source,du.create_time
+        from user_order uo
+        left join dc_user du on du.id = uo.user_id
+        where 1=1
+        <if test="source_cnd !='' and source_cnd !=null">
+            and du.source = #{source_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="visit_time_FROM_cnd !='' and visit_time_FROM_cnd != null">
+            and du.create_time >= #{visit_time_FROM_cnd,jdbcType=VARCHAR}
+        </if>
+        <if test="visit_time_TO_cnd !='' and visit_time_TO_cnd != null">
+            <![CDATA[ and du.create_time <= #{visit_time_TO_cnd,jdbcType=VARCHAR} ]]>
+        </if>
+    </select>
+    <select id="findPayCpaPayBySource" resultType="map">
+        select sl.USER_CODE ,ifnull(su.CPA,10)cpa ,ifnull(su.cpaType,1) cpaType from ifm_sys_user  su
+        left join ifm_sys_login sl on su.userId = sl.lgnId
+        where 1 = 1
+        <if test="source_cnd !='' and source_cnd !=null">
+            and sl.USER_CODE = #{source_cnd,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="fetchOpenLogin" resultType="map">
+        SELECT DISTINCT source
+        FROM dc_visit_log dl
+        left join ifm_sys_login il on dl.source = il.USER_CODE
+        WHERE classify = '3' and source != '' and il.openLgnId=#{userCode,jdbcType=INTEGER}
+    </select>
+</mapper>

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyy.ifm.mbg.mapper.UserBankcardMapper">
+  <resultMap id="BaseResultMap" type="com.hyy.ifm.mbg.model.UserBankcard">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="card_no" jdbcType="VARCHAR" property="cardNo" />
+    <result column="bank_code" jdbcType="VARCHAR" property="bankCode" />
+    <result column="card_top" jdbcType="VARCHAR" property="cardTop" />
+    <result column="card_last" jdbcType="VARCHAR" property="cardLast" />
+    <result column="request_no" jdbcType="VARCHAR" property="requestNo" />
+    <result column="is_auth" jdbcType="CHAR" property="isAuth" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="bind_time" jdbcType="TIMESTAMP" property="bindTime" />
+    <result column="auth_from" jdbcType="CHAR" property="authFrom" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_id, card_no, bank_code, card_top, card_last, request_no, is_auth, create_time, 
+    bind_time, auth_from, remark
+  </sql>
+  <select id="selectByExample" parameterType="com.hyy.ifm.mbg.model.UserBankcardExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from user_bankcard
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_bankcard
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_bankcard
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hyy.ifm.mbg.model.UserBankcardExample">
+    delete from user_bankcard
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hyy.ifm.mbg.model.UserBankcard">
+    insert into user_bankcard (id, user_id, card_no, 
+      bank_code, card_top, card_last, 
+      request_no, is_auth, create_time, 
+      bind_time, auth_from, remark
+      )
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{cardNo,jdbcType=VARCHAR}, 
+      #{bankCode,jdbcType=VARCHAR}, #{cardTop,jdbcType=VARCHAR}, #{cardLast,jdbcType=VARCHAR}, 
+      #{requestNo,jdbcType=VARCHAR}, #{isAuth,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{bindTime,jdbcType=TIMESTAMP}, #{authFrom,jdbcType=CHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hyy.ifm.mbg.model.UserBankcard">
+    insert into user_bankcard
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="cardNo != null">
+        card_no,
+      </if>
+      <if test="bankCode != null">
+        bank_code,
+      </if>
+      <if test="cardTop != null">
+        card_top,
+      </if>
+      <if test="cardLast != null">
+        card_last,
+      </if>
+      <if test="requestNo != null">
+        request_no,
+      </if>
+      <if test="isAuth != null">
+        is_auth,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="bindTime != null">
+        bind_time,
+      </if>
+      <if test="authFrom != null">
+        auth_from,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="cardNo != null">
+        #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCode != null">
+        #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardTop != null">
+        #{cardTop,jdbcType=VARCHAR},
+      </if>
+      <if test="cardLast != null">
+        #{cardLast,jdbcType=VARCHAR},
+      </if>
+      <if test="requestNo != null">
+        #{requestNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isAuth != null">
+        #{isAuth,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bindTime != null">
+        #{bindTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="authFrom != null">
+        #{authFrom,jdbcType=CHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hyy.ifm.mbg.model.UserBankcardExample" resultType="java.lang.Integer">
+    select count(*) from user_bankcard
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update user_bankcard
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.cardNo != null">
+        card_no = #{record.cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankCode != null">
+        bank_code = #{record.bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cardTop != null">
+        card_top = #{record.cardTop,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cardLast != null">
+        card_last = #{record.cardLast,jdbcType=VARCHAR},
+      </if>
+      <if test="record.requestNo != null">
+        request_no = #{record.requestNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isAuth != null">
+        is_auth = #{record.isAuth,jdbcType=CHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.bindTime != null">
+        bind_time = #{record.bindTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.authFrom != null">
+        auth_from = #{record.authFrom,jdbcType=CHAR},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update user_bankcard
+    set id = #{record.id,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      card_no = #{record.cardNo,jdbcType=VARCHAR},
+      bank_code = #{record.bankCode,jdbcType=VARCHAR},
+      card_top = #{record.cardTop,jdbcType=VARCHAR},
+      card_last = #{record.cardLast,jdbcType=VARCHAR},
+      request_no = #{record.requestNo,jdbcType=VARCHAR},
+      is_auth = #{record.isAuth,jdbcType=CHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      bind_time = #{record.bindTime,jdbcType=TIMESTAMP},
+      auth_from = #{record.authFrom,jdbcType=CHAR},
+      remark = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hyy.ifm.mbg.model.UserBankcard">
+    update user_bankcard
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="cardNo != null">
+        card_no = #{cardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bankCode != null">
+        bank_code = #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cardTop != null">
+        card_top = #{cardTop,jdbcType=VARCHAR},
+      </if>
+      <if test="cardLast != null">
+        card_last = #{cardLast,jdbcType=VARCHAR},
+      </if>
+      <if test="requestNo != null">
+        request_no = #{requestNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isAuth != null">
+        is_auth = #{isAuth,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bindTime != null">
+        bind_time = #{bindTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="authFrom != null">
+        auth_from = #{authFrom,jdbcType=CHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hyy.ifm.mbg.model.UserBankcard">
+    update user_bankcard
+    set user_id = #{userId,jdbcType=INTEGER},
+      card_no = #{cardNo,jdbcType=VARCHAR},
+      bank_code = #{bankCode,jdbcType=VARCHAR},
+      card_top = #{cardTop,jdbcType=VARCHAR},
+      card_last = #{cardLast,jdbcType=VARCHAR},
+      request_no = #{requestNo,jdbcType=VARCHAR},
+      is_auth = #{isAuth,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      bind_time = #{bindTime,jdbcType=TIMESTAMP},
+      auth_from = #{authFrom,jdbcType=CHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
